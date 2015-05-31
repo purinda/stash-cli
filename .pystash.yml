@@ -1,0 +1,17 @@
+stash:
+  server: klibr.dev
+  scheme: http
+  port: 7990
+  username: purinda
+  password: mpspgg
+project:
+  code: t1
+  repo: test1
+template:
+    reviewers:
+        - purinda.gunasekara@news.com.au
+        - tony.quilkey@news.com.au
+    summary:
+        Test PR summary
+        {{UAT}}
+        {{ANOTHER}}
