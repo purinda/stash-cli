@@ -41,23 +41,25 @@ def stash_client(config):
 
 def create_pr():
     # Pull request title
-    title = prompt.query('Title:')
+    title = prompt.query('Title: ')
 
     # Current branch
-    branch_name = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
-    branch_head = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+    branch_name = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
     # Replace template placeholders with input from the user
     for placeholder in template.getPlaceholders():
-        value = prompt.query(placeholder + ":")
+        value = prompt.query(placeholder + ": ")
         template.setPlaceholderValue(placeholder, value)
 
     # Get project and repository name
     project = config['project']['code']
     repo = config['project']['repo']
 
+    # Reviewers
+    reviewers = config['template']['reviewers']
+
     # Initiate a PR
-    client.projects[project].repos[repo].pull_requests.create(title, branch_head, 'HEAD', str(template), 'OPEN', reviewers)
+    client.projects[project].repos[repo].pull_requests.create(title, branch_name, 'master', str(template), 'OPEN', reviewers)
 
 if __name__ == '__main__':
     config = read_config()
@@ -71,4 +73,3 @@ if __name__ == '__main__':
     else:
         sys.exit(puts(colored.red('Empty configuration file ("' + CONFIG + '")')))
 
-    # pprint.pprint(client.projects.list())
