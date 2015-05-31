@@ -3,7 +3,7 @@
 #               purinda@gmail.com
 #
 
-import sys, os, stashy, yaml
+import sys, os, stashy, yaml, subprocess
 from stashy import pullrequests
 from clint.textui import puts, indent, colored, prompt, validators
 from template import Template
@@ -40,9 +40,14 @@ def stash_client(config):
     return client
 
 def create_pr():
+    # Pull request title
     title = prompt.query('Title:')
-    puts('Pull-request template requires:')
 
+    # Current branch
+    branch_name = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
+    branch_head = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+
+    # Replace template placeholders with input from the user
     for placeholder in template.getPlaceholders():
         value = prompt.query(placeholder + ":")
         template.setPlaceholderValue(placeholder, value)
@@ -52,7 +57,7 @@ def create_pr():
     repo = config['project']['repo']
 
     # Initiate a PR
-    client.projects[project].repos[repo].pull_requests.create(title, '50cd5b406da', '1996cc66fb8', str(template))
+    client.projects[project].repos[repo].pull_requests.create(title, branch_head, 'HEAD', str(template), 'OPEN', reviewers)
 
 if __name__ == '__main__':
     config = read_config()
