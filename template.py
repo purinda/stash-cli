@@ -4,7 +4,7 @@
 #  This is a simple template parser, wrote to be
 #  used with pystash Stash client.
 
-import re
+import re, os
 
 class Template(object):
     variable_values = {}
@@ -14,6 +14,18 @@ class Template(object):
     def __init__(self, template):
         self.template = template
         self.parsed   = ''
+
+    @staticmethod
+    def fromFile(tpl_file):
+        template = None
+
+        if os.path.isfile(tpl_file):
+            tpl_file = open(tpl_file)
+            template = tpl_file.read()
+        else:
+           raise ValueError('template file not found or readable.')
+
+        return Template(template)
 
     def parseTemplate(self):
         rendered = self.template

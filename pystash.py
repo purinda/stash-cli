@@ -12,7 +12,8 @@ from template import Template
 import pprint
 
 # Stash configuration file
-CONFIG = '.pystash.yml'
+CONFIG   = '.pystash.yml'
+TEMPLATE = '.pystash.tpl'
 
 # Stash client connection
 client = None
@@ -63,13 +64,19 @@ def create_pr():
 
 if __name__ == '__main__':
     config = read_config()
+
     if config:
         client   = stash_client(config['stash'])
-        template = Template(config['template']['summary'])
+        try:
+            template = Template.fromFile(os.path.join(os.getcwd(), TEMPLATE))
+        except ValueError as e:
+            puts(colored.red(e.args))
+            sys.exit(1)
 
         if (template.getPlaceholders() != None):
             create_pr()
 
     else:
-        sys.exit(puts(colored.red('Empty configuration file ("' + CONFIG + '")')))
+        puts(colored.red('Empty configuration file ("' + CONFIG + '")'))
+        sys.exit(1)
 
