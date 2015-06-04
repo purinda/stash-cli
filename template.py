@@ -36,7 +36,7 @@ class Template(object):
 
     def getPlaceholders(self):
         if (self.placeholders == None):
-            self.placeholders = re.findall(r'\{\{(\w*)\}\}', self.template)
+            self.placeholders = re.findall(r'\{\{([\w+\s?]+)\}\}', self.template)
 
         return self.placeholders
 

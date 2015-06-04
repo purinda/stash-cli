@@ -57,7 +57,7 @@ def create_pr():
     repo = config['project']['repo']
 
     # Reviewers
-    reviewers = config['template']['reviewers']
+    reviewers = config['reviewers']
 
     # Initiate a PR
     client.projects[project].repos[repo].pull_requests.create(title, branch_name, 'master', str(template), 'OPEN', reviewers)
