@@ -1,8 +1,9 @@
-#  Author:      Purinda Gunasekara
-#               purinda@gmail.com
 #
-#  This is a simple template parser, wrote to be
-#  used with pystash Stash client.
+# Author: Purinda Gunasekara <purinda@gmail.com>
+#
+# This is a simple template parser, wrote to be
+# used with pystash Stash client.
+#
 
 import re, os
 
@@ -23,7 +24,7 @@ class Template(object):
             tpl_file = open(tpl_file)
             template = tpl_file.read()
         else:
-           raise ValueError('template file not found or readable.')
+           raise IOError('Template file not found or readable.')
 
         return Template(template)
 
