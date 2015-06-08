@@ -1,11 +1,13 @@
-#
-# Author: Purinda Gunasekara <purinda@gmail.com>
-#
-# This is a simple template parser, wrote to be
-# used with pystash Stash client.
-#
+# -*- coding: utf-8 -*-
+"""
+pystash.template
+~~~~~~~~~~~~~~~~
+Very simple template parser.
+ * Supports template variables.
+"""
 
-import re, os
+import re
+import os
 
 class Template(object):
     variable_values = {}
