@@ -2,7 +2,8 @@
 """
 pystash.pullrequest
 ~~~~~~~~~~~~~~~~~~~
-Manages pull requests
+Set pull request parameters and basic create command to initiate
+pull-requests using Stashy library.
 """
 
 import stashy

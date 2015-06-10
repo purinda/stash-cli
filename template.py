@@ -2,8 +2,7 @@
 """
 pystash.template
 ~~~~~~~~~~~~~~~~
-Very simple template parser.
- * Supports template variables.
+Very simple template parser which support template variables.
 """
 
 import re

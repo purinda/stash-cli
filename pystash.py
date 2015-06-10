@@ -4,7 +4,8 @@
 """
 pystash
 ~~~~~~~~~~~~~~~
-This application
+Main script file for pystash application which can be used for making
+pull-requests to your Stash repository using the CLI.
 """
 
 import stashy

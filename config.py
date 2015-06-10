@@ -2,7 +2,7 @@
 """
 pystash.config
 ~~~~~~~~~~~~~~
-This class is responsible for handling configuration for the pystash CLI command
+This class is responsible for handling configuration for pystash
 """
 
 import os
