@@ -11,12 +11,16 @@ import stashy
 import sys
 import os
 import click
-from template import Template
-from config import Config
+import tempfile
 import git
 import errors
+from template import Template
+from config import Config
+from subprocess import call
 from pullrequest import PullRequest
 
+
+EDITOR   = os.environ.get('EDITOR','vim')
 stash    = None
 git_repo = git.Repo(os.getcwd())
 
@@ -43,7 +47,8 @@ Command definition to make pull-requests
 @click.option('--dest-branch', prompt="Destination branch", default=git_repo.refs[0], help='Target branch')
 @click.option('--reviewers', prompt="Reviewers", default=conf.getReviewers(None), help='Target branch')
 @click.option('--state', prompt="Pull-request state", default='OPEN', help='Initial state of the pull-request')
-def pr(title, description, src_branch, dest_branch, reviewers, state):
+@click.option('--multiline/--no-multiline', default=True, help='Open content of the description using the default editor before pushing.')
+def pr(title, description, src_branch, dest_branch, reviewers, state, multiline):
 
     '''Program to create pull-requests in a Atlassian Stash repository.'''
 
@@ -62,9 +67,22 @@ def pr(title, description, src_branch, dest_branch, reviewers, state):
         project = conf.getProject()
         repository = conf.getRepo()
 
+        # Open description in the editor if multiline is configured
+        if (multiline == True):
+            tmp = tempfile.NamedTemporaryFile(suffix=".tmp")
+            try:
+                tmp.write(unicode(template))
+                tmp.flush()
+                call([EDITOR, tmp.name])
+                description = tmp.read()
+            finally:
+                tmp.close()
+        else:
+            description = unicode(template)
+
         pr = PullRequest(stash)
         pr.setTitle(title)
-        pr.setDescription(unicode(template))
+        pr.setDescription(description)
         pr.setSourceBranch(src_branch)
         pr.setDestinationBranch(dest_branch)
         pr.setReviewers(conf.splitReviewers(reviewers))
@@ -86,6 +104,7 @@ def pr(title, description, src_branch, dest_branch, reviewers, state):
     except Exception as e:
         click.echo(click.style(unicode(e), fg='red'))
         sys.exit(1)
+
 
 if __name__ == '__main__':
     pr()
