@@ -21,16 +21,15 @@ stash    = None
 git_repo = git.Repo(os.getcwd())
 
 '''
-Application entry
+Check configuration & git repository before
+continuing
 '''
-if __name__ == '__main__':
-    try:
-        conf     = Config()
-        template = Template.fromFile(conf.getTemplateFilePath())
-        pr()
-    except Exception as e:
-        click.echo(click.style(unicode(e), fg='red'))
-        sys.exit(1)
+try:
+    conf     = Config()
+    template = Template.fromFile(conf.getTemplateFilePath())
+except Exception as e:
+    click.echo(click.style(unicode(e), fg='red'))
+    sys.exit(1)
 
 
 '''
@@ -88,4 +87,5 @@ def pr(title, description, src_branch, dest_branch, reviewers, state):
         click.echo(click.style(unicode(e), fg='red'))
         sys.exit(1)
 
-
+if __name__ == '__main__':
+    pr()
