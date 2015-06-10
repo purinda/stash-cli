@@ -11,6 +11,7 @@ Git 1.7.0 or newer
 It should also work with older versions, but it may be that some operations involving remotes will not work as expected.
 
 # Dependancies
-pip install clint
+pip install click
 pip install stashy
+pip install colorama
 pip install gitpython

@@ -19,53 +19,59 @@ from pullrequest import PullRequest
 # For debugging
 import pprint
 
-stash = None
-template = None
-config = None
+stash    = None
 git_repo = git.Repo(os.getcwd())
+conf     = Config()
+template = Template.fromFile(conf.getTemplateFilePath())
 
 @click.command()
-@click.option('--title', default=git_repo.head.ref, help='Pull-request title')
-@click.option('--description', default='template', help='Description to be set for the pull-request.\
+@click.option('--title', prompt="Title", help='Pull-request title')
+@click.option('--description', prompt="Description", default=template, help='Description to be set for the pull-request.\
     \nDefault: template file specified within .git/config will be read and parsed.')
+@click.option('--src-branch', prompt="Source branch", default=git_repo.head.ref, help='Source branch')
+@click.option('--dest-branch', prompt="Destination branch", default=git_repo.refs[0], help='Target branch')
+@click.option('--reviewers', prompt="Reviewers", default=conf.getReviewers(None), help='Target branch')
+@click.option('--state', prompt="Pull-request state", default='OPEN', help='Initial state of the pull-request')
+def pr(title, description, src_branch, dest_branch, reviewers, state):
 
-def pr(title, description):
-    """Program to create pull-requests in a Atlassian Stash repository."""
+    '''Program to create pull-requests in a Atlassian Stash repository.'''
+
     try:
-        config = Config()
-        stash = stashy.connect(config.getStashUrl(), config.getUsername(), config.getPassword())
-        template = Template.fromFile(config.getTemplateFilePath())
+        stash = stashy.connect(conf.getStashUrl(), conf.getUsername(), conf.getPassword())
+
+        # assign template content
+        template = Template(description)
 
         # Replace template placeholders with input from the user
         for placeholder in template.getPlaceholders():
-            value = prompt.query(placeholder + "? ")
+            value = click.prompt(placeholder)
             template.setPlaceholderValue(placeholder, value)
 
         # Get project and repository name
-        project = config.getProject()
-        repository = config.getRepo()
+        project = conf.getProject()
+        repository = conf.getRepo()
 
-        # Source and destination branches
-        # prompt.query('')
-        branch_name = str(repo.head.ref)
+        pr = PullRequest(stash)
+        pr.setTitle(title)
+        pr.setDescription(unicode(template))
+        pr.setSourceBranch(src_branch)
+        pr.setDestinationBranch(dest_branch)
+        pr.setReviewers(conf.splitReviewers(reviewers))
+        pr.setProject(project)
+        pr.setRepository(repository)
 
-        # puts(colored.green("🍺  Pull request created successfully!"))
+        pr.create(state)
+        click.echo(click.style("🍺  Pull request created successfully!", fg='green'))
+
     except git.exc.InvalidGitRepositoryError as e:
-        puts(colored.red('Directory you are running pystash command is not a git repository.'))
+        click.echo(click.style('Directory you are running pystash command is not a git repository.', fg='red'))
         sys.exit(1)
-    except Exception as e:
-        puts(colored.yellow(unicode(e)))
-        sys.exit(1)
+    # except Exception as e:
+    #     click.echo(click.style(unicode(e), fg='yellow'))
+    #     sys.exit(1)
     except KeyboardInterrupt as e:
-        puts("\nCancelled")
+        click.echo("\nCancelled")
         sys.exit(2)
 
-@click.command()
-@click.option('-v', '--verbose', count=True)
-def decline():
-    print 'test'
-
 if __name__ == '__main__':
-
     pr()
-    decline()

@@ -65,5 +65,14 @@ class Config(object):
     def getRepo(self):
         return self.settings['repo']
 
-    def getReviewers(self):
-        return map(unicode.strip, self.settings['reviewers'].split(','))
+    def getReviewers(self, delimiter = ','):
+        if (delimiter == None):
+            return self.settings['reviewers'];
+        return map(unicode.strip, self.splitReviewers(self.settings['reviewers'], delimiter))
+
+    @staticmethod
+    def splitReviewers(subject, delimiter = ','):
+        if (isinstance(subject, (str, unicode))):
+            return subject.split(delimiter)
+        else:
+            raise ValueError('Need a string to split')

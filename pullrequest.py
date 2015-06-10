@@ -15,8 +15,10 @@ class PullRequest(object):
     title       = None
     description = None
     src_branch  = None
-    dst_branch  = None
+    dest_branch = None
     reviewers   = None
+    repository  = None
+    project     = None
 
     def __init__(self, client):
         self.client = client
@@ -31,22 +33,28 @@ class PullRequest(object):
         self.src_branch = branch
 
     def setDestinationBranch(self, branch):
-        self.dst_branch = branch
+        self.dest_branch = branch
 
     def setReviewers(self, reviewers):
-        if (isinstance(reviewers, (dict, list, array))):
+        if (isinstance(reviewers, (dict, list))):
             self.reviewers = reviewers
         else:
-            raise ValueError('Reviewers should be an array, dict or list')
+            raise ValueError('Reviewers should be either dict or list')
 
-    def create(self):
+    def setProject(self, project):
+        self.project = project
 
-        try:
-            response = client.projects[self.project].repos[self.repo].pull_requests.create(
-                self.title, self.src_branch, self.dst_branch, self.description, state, self.reviewers)
+    def setRepository(self, repo):
+        self.repository = repo
 
-        except stashy.errors.GenericException as e:
-            if ('com.atlassian.stash.pull.DuplicatePullRequestException' == e.data['errors'][0]['exceptionName']):
-                raise errors.DuplicatePullRequestException(e.data['errors'][0]['message'])
+    def create(self, state):
+        response = None
+
+        # try:
+        response = self.client.projects[self.project].repos[self.repository].pull_requests.create(
+            self.title, str(self.src_branch), str(self.dest_branch), self.description, state, self.reviewers)
+        # except stashy.errors.GenericException as e:
+        #     if ('com.atlassian.stash.pull.DuplicatePullRequestException' == e.data['errors'][0]['exceptionName']):
+        #         raise errors.DuplicatePullRequestException(e.data['errors'][0]['message'])
 
         return response

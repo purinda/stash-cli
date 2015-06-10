@@ -15,8 +15,7 @@ class Template(object):
     template        = ""
 
     def __init__(self, template):
-        self.template = template
-        self.parsed   = ''
+        self.template = unicode(template)
 
     @staticmethod
     def fromFile(tpl_file):
@@ -39,6 +38,7 @@ class Template(object):
 
     def getPlaceholders(self):
         if (self.placeholders == None):
+            print self.template
             self.placeholders = re.findall(r'\{\{([\w+\s?]+)\}\}', self.template)
 
         return self.placeholders
