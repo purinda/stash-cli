@@ -2,10 +2,9 @@
 A command-line client for Atlassian Stash written in Python which uses Stash Web API.
 
 ## Features
-* Support for multiple projects.
 * Git support.
-* Initiate pull-requests using commands for predefiend templates.
-* Ability to setup simple DoD (Definition of Done) for developer tasks.
+* Support for multiple projects.
+* Initiate pull-requests using predefiend templates which can also be used for DoD (Definition of Done) against developer tasks.
 
 Git 1.7.0 or newer
 It should also work with older versions, but it may be that some operations involving remotes will not work as expected.
@@ -22,9 +21,17 @@ pip install click stashy colorama gitpython
 * Unzip master.zip to the directory where you keep additional apps.
 `unzip master.zip -d ~/apps/pystash`
 
-## Configure
-pystash uses its own settings section within the .git/config file of the project. Therefore you may need to edit the 
-.git/config of the git repo you need to use with pystash and place following settings with the parameters from your 
+* `cd` into the project that you have configured to use pystash (refer to Configure section), create a branch, commit your work
+then push it up to the origin repository which pystash is pointed at as well. Then run `~/apps/pystash/pystash.py` to automatically
+create the pull-request interactively using pystash.
+
+* [Optional] You can run pystash as a git command by adding a symlink to the `pystash.py` file within your bin directory with
+the git command naming convention.
+> for an example: if you had a bin directory in your home (~/bin) which is sourced using your .bash_profile then adding a symlink using the command `ln -s ~/apps/pystash/pystash.py ~/bin/git-pystash` let you run pystash by typing `git pystash` or `git-pystash`. (You may need to restart your terminal after doing so or re-source the .bash_profile).
+
+### Configure
+pystash uses its own settings section within the .git/config file of the project. Therefore you may need to edit the
+.git/config of the git repo you need to use with pystash and place following settings with the parameters from your
 stash configuration.
 
 ```
@@ -38,13 +45,19 @@ stash configuration.
     template = .pystash.tpl
 ```
 
-**template** key in config above should point to a file and within that you can have variables
-that will be 
+#### Templates
+Where **template** key in config above should point to a file within the project directory. Example (.pystash.tpl) template is shown below
+```
+Covers:
+    http://jira.acme.com/browse/PROJ-{{Ticket ID}}
+UAT:
+    http://{{UAT Name}}.uat.acme.com
 
-### Pull-request or DoD 
-Sometimes you need to
+{{Solution Description}}
 
-## How to use
-`cd` into the project that you have configured to use pystash, create a branch, commit your work
-then push it up to the origin repository which pystash is pointed at as well. Then run
-`~/apps/pystash/pystash.py` which will ask required parameters to create the pull-request.
+- [ ] Work reflects requirements
+- [ ] Docs
+- [ ] Tests
+- [ ] Product sign off
+```
+Above template has multiple variables that will be prompted to be filled in before pull-request is initiated.
