@@ -14,6 +14,7 @@ import click
 from template import Template
 from config import Config
 import git
+import errors
 from pullrequest import PullRequest
 
 # For debugging
@@ -66,12 +67,15 @@ def pr(title, description, src_branch, dest_branch, reviewers, state):
     except git.exc.InvalidGitRepositoryError as e:
         click.echo(click.style('Directory you are running pystash command is not a git repository.', fg='red'))
         sys.exit(1)
-    # except Exception as e:
-    #     click.echo(click.style(unicode(e), fg='yellow'))
-    #     sys.exit(1)
+    except errors.DuplicatePullRequest as e:
+        click.echo(click.style(unicode(e), fg='yellow'))
+        sys.exit(1)
     except KeyboardInterrupt as e:
         click.echo("\nCancelled")
         sys.exit(2)
+    except Exception as e:
+        click.echo(click.style(unicode(e), fg='red'))
+        sys.exit(1)
 
 if __name__ == '__main__':
     pr()
