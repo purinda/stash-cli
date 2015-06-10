@@ -17,14 +17,25 @@ import git
 import errors
 from pullrequest import PullRequest
 
-# For debugging
-import pprint
-
 stash    = None
 git_repo = git.Repo(os.getcwd())
-conf     = Config()
-template = Template.fromFile(conf.getTemplateFilePath())
 
+'''
+Application entry
+'''
+if __name__ == '__main__':
+    try:
+        conf     = Config()
+        template = Template.fromFile(conf.getTemplateFilePath())
+        pr()
+    except Exception as e:
+        click.echo(click.style(unicode(e), fg='red'))
+        sys.exit(1)
+
+
+'''
+Command definition to make pull-requests
+'''
 @click.command()
 @click.option('--title', prompt="Title", help='Pull-request title')
 @click.option('--description', prompt="Description", default=template, help='Description to be set for the pull-request.\
@@ -77,5 +88,4 @@ def pr(title, description, src_branch, dest_branch, reviewers, state):
         click.echo(click.style(unicode(e), fg='red'))
         sys.exit(1)
 
-if __name__ == '__main__':
-    pr()
+
