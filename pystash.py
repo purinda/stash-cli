@@ -100,6 +100,9 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
     except errors.DuplicatePullRequest as e:
         click.echo(click.style(unicode(e), fg='yellow'))
         sys.exit(1)
+    except errors.EmptyPullRequest as e:
+        click.echo(click.style(unicode(e), fg='green'))
+        sys.exit(1)
     except KeyboardInterrupt as e:
         click.echo("\nCancelled")
         sys.exit(2)

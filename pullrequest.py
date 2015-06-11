@@ -54,8 +54,13 @@ class PullRequest(object):
         try:
             response = self.client.projects[self.project].repos[self.repository].pull_requests.create(
                 self.title, str(self.src_branch), str(self.dest_branch), self.description, state, self.reviewers)
+
         except stashy.errors.GenericException as e:
             if ('com.atlassian.stash.pull.DuplicatePullRequestException' == e.data['errors'][0]['exceptionName']):
                 raise errors.DuplicatePullRequest(e.data['errors'][0]['message'])
+            if ('com.atlassian.stash.pull.EmptyPullRequestException' == e.data['errors'][0]['exceptionName']):
+                raise errors.EmptyPullRequest(e.data['errors'][0]['message'])
+            else:
+                raise Exception(e.data['errors']['0']['message'])
 
         return response
