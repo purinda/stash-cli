@@ -75,7 +75,8 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
                 tmp.write(unicode(template))
                 tmp.flush()
                 call([EDITOR, tmp.name])
-                description = tmp.read()
+                f = open(tmp.name, 'r')
+                description = f.read()
             finally:
                 tmp.close()
         else:
