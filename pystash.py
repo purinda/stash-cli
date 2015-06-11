@@ -20,7 +20,6 @@ from config import Config
 from subprocess import call
 from pullrequest import PullRequest
 
-
 EDITOR   = os.environ.get('EDITOR','vim')
 stash    = None
 git_repo = git.Repo(os.getcwd())
@@ -45,7 +44,7 @@ Command definition to make pull-requests
 @click.option('--description', prompt="Description", default=template, help='Description to be set for the pull-request.\
     \nDefault: template file specified within .git/config will be read and parsed.')
 @click.option('--src-branch', prompt="Source branch", default=git_repo.head.ref, help='Source branch')
-@click.option('--dest-branch', prompt="Destination branch", default=git_repo.refs[0], help='Target branch')
+@click.option('--dest-branch', prompt="Destination branch", default=conf.getMergeDestination(), help='Target branch')
 @click.option('--reviewers', prompt="Reviewers", default=conf.getReviewers(None), help='Target branch')
 @click.option('--state', prompt="Pull-request state", default='OPEN', help='Initial state of the pull-request')
 @click.option('--multiline/--no-multiline', default=True, help='Open content of the description using the default editor before pushing.')

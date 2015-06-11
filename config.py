@@ -35,6 +35,7 @@ class Config(object):
         config_fact.append('password');
         config_fact.append('project');
         config_fact.append('repo');
+        config_fact.append('mergedestination');
         config_fact.append('reviewers');
         config_fact.append('template');
 
@@ -52,6 +53,9 @@ class Config(object):
 
     def getStashUrl(self):
         return self.settings['url']
+
+    def getMergeDestination(self):
+        return self.settings['mergedestination']
 
     def getUsername(self):
         return self.settings['username']
