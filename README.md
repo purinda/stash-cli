@@ -1,6 +1,8 @@
 # pystash
 A command-line client for Atlassian Stash written in Python which uses Stash Web API.
 
+![demo](https://raw.github.com/purinda/pystash/master/demo.gif)
+
 ## Features
 * Git support.
 * Support for multiple projects.
