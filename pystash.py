@@ -15,10 +15,13 @@ import click
 import tempfile
 import git
 import errors
+import hipchat
 from template import Template
 from config import Config
 from subprocess import call
 from pullrequest import PullRequest
+
+import pprint
 
 EDITOR   = os.environ.get('EDITOR','vim')
 stash    = None
@@ -90,7 +93,8 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
         pr.setProject(project)
         pr.setRepository(repository)
 
-        pr.create(state)
+        response = pr.create(state)
+        pprint response
         click.echo(click.style("🍺  Pull request created successfully!", fg='green'))
 
     except git.exc.InvalidGitRepositoryError as e:
