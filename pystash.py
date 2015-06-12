@@ -16,12 +16,14 @@ import tempfile
 import git
 import errors
 import hipchat
+import pprint
 from template import Template
 from config import Config
 from subprocess import call
 from pullrequest import PullRequest
 
-import pprint
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 EDITOR   = os.environ.get('EDITOR','vim')
 stash    = None
@@ -94,8 +96,20 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
         pr.setRepository(repository)
 
         response = pr.create(state)
-        pprint response
-        click.echo(click.style("🍺  Pull request created successfully!", fg='green'))
+        url    = response['links']['self'][0]['href'];
+        author = response['author']['user']['displayName']
+        pr_id  = str(response['id'])
+        message = 'pull-request #' + pr_id + ' - "' + title + '" added by ' + author + ', please review here ' + url
+
+        # CLI print
+        click.echo('')
+        click.echo(click.style('Sending pull-request...', fg='yellow'))
+        click.echo(click.style('Stash URL: ' + url, fg='green'))
+        click.echo(click.style('✅  Pull request #' + pr_id + ' - "' + title + '" created successfully.', fg='green'))
+
+        # Hipchat
+        chat = hipchat.Notifier(conf.getHipchatToken())
+        chat.notify(conf.getHipchatRoom(), conf.getHipchatAgent(), message, hipchat.Format.HTML, hipchat.MsgColour.PURPLE)
 
     except git.exc.InvalidGitRepositoryError as e:
         click.echo(click.style('Directory you are running pystash command is not a git repository.', fg='red'))
@@ -112,7 +126,6 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
     except Exception as e:
         click.echo(click.style(unicode(e), fg='red'))
         sys.exit(1)
-
 
 if __name__ == '__main__':
     pr()
