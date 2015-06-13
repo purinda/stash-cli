@@ -23,11 +23,11 @@ pip install click stashy colorama gitpython
 * Unzip master.zip to the directory where you keep additional apps.
 `unzip master.zip -d ~/apps/pystash`
 
-* `cd` into the project that you have configured to use pystash (refer to Configure section), create a branch, commit your work
-then push it up to the origin repository which pystash is pointed at as well. Then run `~/apps/pystash/pystash.py` to automatically
+* ```cd``` into the project that you have configured to use pystash (refer to Configure section), create a branch, commit your work
+then push it up to the origin repository which pystash is pointed at as well. Then run ```~/apps/pystash/pystash.py``` to automatically
 create the pull-request interactively using pystash.
 
-* [Optional] You can run pystash as a git command by adding a symlink to the `pystash.py` file within your bin directory with
+* [Optional] You can run pystash as a git command by adding a symlink to the ```pystash.py``` file within your bin directory with
 the git command naming convention.
 > for an example: if you had a bin directory in your home (~/bin) which is sourced using your .bash_profile then adding a symlink using the command `ln -s ~/apps/pystash/pystash.py ~/bin/git-pystash` let you run pystash by typing `git pystash` or `git-pystash`. (You may need to restart your terminal after doing so or re-source the .bash_profile).
 
@@ -64,3 +64,23 @@ UAT:
 - [ ] Product sign off
 ```
 Above template has multiple variables that will be prompted to be filled in before pull-request is initiated.
+
+## Hipchat Intergration
+Pystash can be intergrated with your developer chatroom in Hipchat, this enables pull-request references to be published in the chatroom with a hyperlink to the Stash pull-request review interface. Currently pystash hipchat intergration only supports the atlassian hipchat server (https://api.hipchat.com) hosted chatrooms. This can be extended to support privately hosted hipchat servers easily, please make a feature request to add support.
+
+### Setup
+In addition to the above configuration section within .git/config add the following three parameters as highlighted below. 
+
+```
+[pystash]
+    url = http://stash-server-url:7990
+... reset of stash config ...
+    hipchat = 1
+    hipchattoken = a1e81c2dfffa12a11d29d3204dd041
+    hipchatroom = Room Name Here
+    hipchatagent = Pystash
+```
+
+* ```hipchat``` parameter accepts 0 or 1 which disables or enables hipchat integration
+* ```hipchattoken``` hipchat API token received from https://api.hipchat.com
+* ```hipchatagent``` name specified here will be displayed on Hipchat room as bot originating messages
