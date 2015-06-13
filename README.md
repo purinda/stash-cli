@@ -31,7 +31,7 @@ create the pull-request interactively using pystash.
 the git command naming convention.
 > for an example: if you had a bin directory in your home (~/bin) which is sourced using your .bash_profile then adding a symlink using the command `ln -s ~/apps/pystash/pystash.py ~/bin/git-pystash` let you run pystash by typing `git pystash` or `git-pystash`. (You may need to restart your terminal after doing so or re-source the .bash_profile).
 
-### Configure
+### Configuration
 pystash uses its own settings section within the .git/config file of the project. Therefore you may need to edit the
 .git/config of the git repo you need to use with pystash and place following settings with the parameters from your
 stash configuration.
