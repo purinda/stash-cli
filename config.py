@@ -40,6 +40,7 @@ class Config(object):
         config_fact.append('template')
 
         config_opt = []
+        config_opt.append('hipchat')
         config_opt.append('hipchattoken')
         config_opt.append('hipchatroom')
         config_opt.append('hipchatagent')
@@ -86,6 +87,9 @@ class Config(object):
         if (delimiter == None):
             return self.settings['reviewers'];
         return map(unicode.strip, self.splitReviewers(self.settings['reviewers'], delimiter))
+
+    def isHipchatEnabled(self):
+        return '0' != str(self.settings['hipchat'])
 
     def getHipchatToken(self):
         return self.settings['hipchattoken']

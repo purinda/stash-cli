@@ -16,7 +16,6 @@ import tempfile
 import git
 import errors
 import hipchat
-import pprint
 from template import Template
 from config import Config
 from subprocess import call
@@ -95,22 +94,27 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
         pr.setProject(project)
         pr.setRepository(repository)
 
-        response = pr.create(state)
-        url    = response['links']['self'][0]['href'];
-        author = response['author']['user']['displayName']
-        pr_id  = str(response['id'])
-        message = 'pull-request #' + pr_id + ' - "' + title + '" added by ' + author + ', please review here ' + url
+        pr_response = pr.create(state)
 
-        # CLI print
         click.echo('')
         click.echo(click.style('Sending pull-request...', fg='yellow'))
-        click.echo(click.style('Stash URL: ' + url, fg='green'))
-        click.echo(click.style('✅  Pull request #' + pr_id + ' - "' + title + '" created successfully.', fg='green'))
 
-        # Hipchat
-        chat = hipchat.Notifier(conf.getHipchatToken())
-        chat.notify(conf.getHipchatRoom(), conf.getHipchatAgent(), message, hipchat.Format.HTML, hipchat.MsgColour.PURPLE)
+        # CLI print
+        click.echo(click.style('Stash URL: ' + pr_response.getUrl(), fg='green'))
+        click.echo(click.style('✅  Pull request #' + pr_response.getId() + ' - "' + \
+            pr_response.getTitle() + '" created successfully.', fg='green'))
 
+        # Integrate with Hipchat if enabled
+        if (conf.isHipchatEnabled()):
+            message = '🔀 ' + pr_response.getAuthor() + ' added pull-request <a href="' + \
+                pr_response.getUrl() + '">#' + pr_response.getId() + ' ' + pr_response.getTitle() + '</a>'
+            chat = hipchat.Notifier(conf.getHipchatToken())
+            chat.notify(conf.getHipchatRoom(), conf.getHipchatAgent(), message,
+                hipchat.Format.HTML, hipchat.MsgColour.PURPLE)
+            click.echo(click.style('✅  Published pull-request reference in Hipchat.', fg='green'))
+
+        click.echo('')
+        sys.exit(0)
     except git.exc.InvalidGitRepositoryError as e:
         click.echo(click.style('Directory you are running pystash command is not a git repository.', fg='red'))
         sys.exit(1)

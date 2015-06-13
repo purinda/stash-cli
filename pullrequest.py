@@ -48,7 +48,7 @@ class PullRequest(object):
     def setRepository(self, repo):
         self.repository = repo
 
-    def create(self, state):
+    def create(self, state = 'OPEN'):
         response = None
 
         try:
@@ -63,4 +63,42 @@ class PullRequest(object):
             else:
                 raise Exception(e.data['errors']['0']['message'])
 
-        return response
+        return PullRequestResponse(response)
+
+
+class PullRequestResponse(object):
+    json = None
+
+    # Properties
+    id          = None
+    title       = None
+    description = None
+    url         = None
+    author      = None
+
+    def __init__(self, json):
+        if (json != None):
+            self.json = json
+            self.parse()
+
+    def parse(self):
+        self.id          = self.json['id']
+        self.title       = self.json['title']
+        self.description = self.json['description']
+        self.url         = self.json['links']['self'][0]['href']
+        self.author      = self.json['author']['user']['displayName']
+
+    def getId(self):
+        return str(self.id)
+
+    def getTitle(self):
+        return self.title
+
+    def getDescription(self):
+        return self.description
+
+    def getUrl(self):
+        return self.url
+
+    def getAuthor(self):
+        return self.author
