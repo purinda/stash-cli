@@ -43,6 +43,7 @@ stash configuration.
     password = demo
     project = acme-project
     repo = acme-desktop-app
+    mergedestination = master
     reviewers = john.doe,jane.doe
     template = .pystash.tpl
 ```

@@ -15,11 +15,14 @@ import click
 import tempfile
 import git
 import errors
+import hipchat
 from template import Template
 from config import Config
 from subprocess import call
 from pullrequest import PullRequest
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 EDITOR   = os.environ.get('EDITOR','vim')
 stash    = None
@@ -45,7 +48,7 @@ Command definition to make pull-requests
 @click.option('--description', prompt="Description", default=template, help='Description to be set for the pull-request.\
     \nDefault: template file specified within .git/config will be read and parsed.')
 @click.option('--src-branch', prompt="Source branch", default=git_repo.head.ref, help='Source branch')
-@click.option('--dest-branch', prompt="Destination branch", default=git_repo.refs[0], help='Target branch')
+@click.option('--dest-branch', prompt="Destination branch", default=conf.getMergeDestination(), help='Target branch')
 @click.option('--reviewers', prompt="Reviewers", default=conf.getReviewers(None), help='Target branch')
 @click.option('--state', prompt="Pull-request state", default='OPEN', help='Initial state of the pull-request')
 @click.option('--multiline/--no-multiline', default=True, help='Open content of the description using the default editor before pushing.')
@@ -91,9 +94,27 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
         pr.setProject(project)
         pr.setRepository(repository)
 
-        pr.create(state)
-        click.echo(click.style("🍺  Pull request created successfully!", fg='green'))
+        pr_response = pr.create(state)
 
+        click.echo('')
+        click.echo(click.style('Sending pull-request...', fg='yellow'))
+
+        # CLI print
+        click.echo(click.style('Stash URL: ' + pr_response.getUrl(), fg='green'))
+        click.echo(click.style('✅  Pull request #' + pr_response.getId() + ' - "' + \
+            pr_response.getTitle() + '" created successfully.', fg='green'))
+
+        # Integrate with Hipchat if enabled
+        if (conf.isHipchatEnabled()):
+            message = '🔀 ' + pr_response.getAuthor() + ' added pull-request <a href="' + \
+                pr_response.getUrl() + '">#' + pr_response.getId() + ' ' + pr_response.getTitle() + '</a>'
+            chat = hipchat.Notifier(conf.getHipchatToken())
+            chat.notify(conf.getHipchatRoom(), conf.getHipchatAgent(), message,
+                hipchat.Format.HTML, hipchat.MsgColour.PURPLE)
+            click.echo(click.style('✅  Published pull-request reference in Hipchat.', fg='green'))
+
+        click.echo('')
+        sys.exit(0)
     except git.exc.InvalidGitRepositoryError as e:
         click.echo(click.style('Directory you are running pystash command is not a git repository.', fg='red'))
         sys.exit(1)
@@ -109,7 +130,6 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
     except Exception as e:
         click.echo(click.style(unicode(e), fg='red'))
         sys.exit(1)
-
 
 if __name__ == '__main__':
     pr()

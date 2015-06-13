@@ -30,19 +30,34 @@ class Config(object):
         Load configuration from gitconfig, validate at the same time.
         '''
         config_fact = []
-        config_fact.append('url');
-        config_fact.append('username');
-        config_fact.append('password');
-        config_fact.append('project');
-        config_fact.append('repo');
-        config_fact.append('reviewers');
-        config_fact.append('template');
+        config_fact.append('url')
+        config_fact.append('username')
+        config_fact.append('password')
+        config_fact.append('project')
+        config_fact.append('repo')
+        config_fact.append('mergedestination')
+        config_fact.append('reviewers')
+        config_fact.append('template')
 
+        config_opt = []
+        config_opt.append('hipchat')
+        config_opt.append('hipchattoken')
+        config_opt.append('hipchatroom')
+        config_opt.append('hipchatagent')
+
+        # Stash config params (mandatory)
         for item in config_fact:
             try:
                 self.settings[item] = self.parser.get_value(self.SECTION, item)
             except Exception:
                 raise AttributeError('Incorrectly configured pystash within gitconfig, refer to README.md')
+
+        # Optional config
+        for item in config_opt:
+            try:
+                self.settings[item] = self.parser.get_value(self.SECTION, item)
+            except Exception:
+                pass
 
     def getTemplateFilePath(self):
         if os.path.isfile(self.settings['template']):
@@ -52,6 +67,9 @@ class Config(object):
 
     def getStashUrl(self):
         return self.settings['url']
+
+    def getMergeDestination(self):
+        return self.settings['mergedestination']
 
     def getUsername(self):
         return self.settings['username']
@@ -69,6 +87,18 @@ class Config(object):
         if (delimiter == None):
             return self.settings['reviewers'];
         return map(unicode.strip, self.splitReviewers(self.settings['reviewers'], delimiter))
+
+    def isHipchatEnabled(self):
+        return '0' != str(self.settings['hipchat'])
+
+    def getHipchatToken(self):
+        return self.settings['hipchattoken']
+
+    def getHipchatRoom(self):
+        return self.settings['hipchatroom']
+
+    def getHipchatAgent(self):
+        return self.settings['hipchatagent']
 
     @staticmethod
     def splitReviewers(subject, delimiter = ','):
