@@ -3,6 +3,8 @@
 pystash.hipchat
 ~~~~~~~~~~~~~~~
 A simple hipchat intergration library.
+
+- A special thanks to Jordon Scott.
 """
 
 
