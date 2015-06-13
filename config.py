@@ -7,6 +7,7 @@ This class is responsible for handling configuration for pystash
 
 import os
 import string
+import base64
 from git.config import GitConfigParser
 
 class Config(object):
@@ -75,7 +76,7 @@ class Config(object):
         return self.settings['username']
 
     def getPassword(self):
-        return self.settings['password']
+        return str(base64.b64decode(self.settings['password'])).strip()
 
     def getProject(self):
         return self.settings['project']
