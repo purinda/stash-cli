@@ -39,7 +39,6 @@ except Exception as e:
     click.echo(click.style(unicode(e), fg='red'))
     sys.exit(1)
 
-
 '''
 Command definition to make pull-requests
 '''

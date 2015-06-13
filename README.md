@@ -40,13 +40,15 @@ stash configuration.
 [pystash]
     url = http://stash-server-url:7990
     username = demo
-    password = demo
+    password = ZGVtbwo=
     project = acme-project
     repo = acme-desktop-app
     mergedestination = master
     reviewers = john.doe,jane.doe
     template = .pystash.tpl
 ```
+
+* ```password``` parameter should be the base64 representation of your plaintext password used for logging into Stash
 
 #### Templates
 Where **template** key in config above should point to a file within the project directory. Example (.pystash.tpl) template is shown below
@@ -69,7 +71,7 @@ Above template has multiple variables that will be prompted to be filled in befo
 Pystash can be intergrated with your developer chatroom in Hipchat, this enables pull-request references to be published in the chatroom with a hyperlink to the Stash pull-request review interface. Currently pystash hipchat intergration only supports the atlassian hipchat server (https://api.hipchat.com) hosted chatrooms. This can be extended to support privately hosted hipchat servers easily, please make a feature request to add support.
 
 ### Setup
-In addition to the above configuration section within .git/config add the following three parameters as highlighted below. 
+In addition to the above configuration section within .git/config add the following three parameters as highlighted below.
 
 ```
 [pystash]
