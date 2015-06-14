@@ -11,25 +11,9 @@ A command-line client for Atlassian Stash written in Python which uses Stash Web
 Git 1.7.0 or newer
 It should also work with older versions, but it may be that some operations involving remotes will not work as expected.
 
-## Setup
-### Install python dependancies
-pip install click stashy colorama gitpython
-
 ### Install stashcli
 
-* Get the latest stashcli source
-`wget https://github.com/purinda/stashcli/archive/master.zip
-
-* Unzip master.zip to the directory where you keep additional apps.
-`unzip master.zip -d ~/apps/stashcli`
-
-* ```cd``` into the project that you have configured to use stashcli (refer to Configure section), create a branch, commit your work
-then push it up to the origin repository which stashcli is pointed at as well. Then run ```~/apps/stashcli/stashcli.py``` to automatically
-create the pull-request interactively using stashcli.
-
-* [Optional] You can run stashcli as a git command by adding a symlink to the ```stashcli.py``` file within your bin directory with
-the git command naming convention.
-> for an example: if you had a bin directory in your home (~/bin) which is sourced using your .bash_profile then adding a symlink using the command `ln -s ~/apps/stashcli/stashcli.py ~/bin/git-stashcli` let you run stashcli by typing `git stashcli` or `git-stashcli`. (You may need to restart your terminal after doing so or re-source the .bash_profile).
+```pip install stashcli```
 
 ### Configuration
 stashcli uses its own settings section within the .git/config file of the project. Therefore you may need to edit the
