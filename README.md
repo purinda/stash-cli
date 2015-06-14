@@ -4,9 +4,10 @@ A command-line client for Atlassian Stash written in Python which uses Stash Web
 ![demo](https://raw.github.com/purinda/stashcli/master/demo.gif)
 
 ## Features
-* Git support.
-* Support for multiple projects.
-* Initiate pull-requests using predefiend templates which can also be used for DoD (Definition of Done) against developer tasks.
+* Git support
+* Initiate pull-requests using predefiend templates which can also be used for DoD (Definition of Done) against developer tasks
+* Support for multiple projects
+* HipChat integration
 
 Git 1.7.0 or newer
 It should also work with older versions, but it may be that some operations involving remotes will not work as expected.
