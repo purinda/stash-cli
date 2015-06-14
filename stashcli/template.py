@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-pystash.template
-~~~~~~~~~~~~~~~~
+stashcli.template
+~~~~~~~~~~~~~~~~~~
 Very simple template parser which support template variables.
 """
 
