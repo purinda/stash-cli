@@ -12,8 +12,8 @@ import os
 import click
 import tempfile
 import git
-import errors
 import stashcli.hipchat
+import stashcli.errors
 from stashcli.template import Template
 from stashcli.config import Config
 from stashcli.pullrequest import PullRequest
