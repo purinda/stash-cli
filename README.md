@@ -1,7 +1,7 @@
 # stashcli
 A command-line client for Atlassian Stash written in Python which uses Stash Web API.
 
-![demo](https://raw.github.com/purinda/stashcli/master/demo.gif)
+![demo](https://raw.githubusercontent.com/purinda/stash-cli/master/demo.gif)
 
 ## Features
 * Git support
