@@ -16,7 +16,7 @@ setup(
     author='Purinda Gunasekara',
     author_email='purinda@gmail.com',
     packages=[ 'stashcli' ],
-    scripts=[ 'bin/stash' ],
+    scripts=[ 'bin/stashcli' ],
     url='https://github.com/purinda/stash-cli',
     license='LICENSE.md',
     description='Make pull-requests to Stash repos from the CLI, and notify the ream via Hipchat.',
