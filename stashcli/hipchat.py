@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-pystash.hipchat
-~~~~~~~~~~~~~~~
+stashcli.hipchat
+~~~~~~~~~~~~~~~~~
 A simple hipchat intergration library.
 
 - A special thanks to Jordon Scott.

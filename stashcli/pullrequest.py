@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-pystash.pullrequest
-~~~~~~~~~~~~~~~~~~~
+stashcli.pullrequest
+~~~~~~~~~~~~~~~~~~~~~
 Set pull request parameters and basic create command to initiate
 pull-requests using Stashy library.
 """

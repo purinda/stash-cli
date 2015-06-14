@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-pystash.errors
-~~~~~~~~~~~~~~
-pystash exception definitions
+stashcli.errors
+~~~~~~~~~~~~~~~~
+stashcli exception definitions
 """
 
 class DuplicatePullRequest(Exception):

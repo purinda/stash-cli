@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-pystash.config
-~~~~~~~~~~~~~~
-This class is responsible for handling configuration for pystash
+stashcli.config
+~~~~~~~~~~~~~~~~
+This class is responsible for handling configuration for stashcli
 """
 
 import os
@@ -13,7 +13,7 @@ from git.config import GitConfigParser
 class Config(object):
 
     CONFIG = '.git/config'
-    SECTION = 'pystash'
+    SECTION = 'stashcli'
     parser = None
     settings = {}
 
@@ -24,7 +24,7 @@ class Config(object):
             self.parser = GitConfigParser(gitconfig, read_only=True)
             self.loadConfig()
         else:
-            raise IOError('Stash project configuration file for pystash not found (' + self.CONFIG + ')')
+            raise IOError('Stash project configuration file for stashcli not found (' + self.CONFIG + ')')
 
     def loadConfig(self):
         '''
@@ -51,7 +51,7 @@ class Config(object):
             try:
                 self.settings[item] = self.parser.get_value(self.SECTION, item)
             except Exception:
-                raise AttributeError('Incorrectly configured pystash within gitconfig, refer to README.md')
+                raise AttributeError('Incorrectly configured stashcli within gitconfig, refer to README.md')
 
         # Optional config
         for item in config_opt:
@@ -64,7 +64,7 @@ class Config(object):
         if os.path.isfile(self.settings['template']):
             return self.settings['template']
         else:
-            raise IOError('Pull-request template file for pystash not found (' + self.settings['template'] + ')')
+            raise IOError('Pull-request template file for stashcli not found (' + self.settings['template'] + ')')
 
     def getStashUrl(self):
         return self.settings['url']
