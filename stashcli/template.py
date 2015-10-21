@@ -8,23 +8,22 @@ Very simple template parser which support template variables.
 import re
 import os
 
+
 class Template(object):
     variable_values = {}
-    placeholders    = None
-    template        = ""
+    placeholders = None
+    template = ""
 
     def __init__(self, template):
         self.template = unicode(template)
 
     @staticmethod
     def fromFile(tpl_file):
-        template = None
-
         if os.path.isfile(tpl_file):
             tpl_file = open(tpl_file)
             template = tpl_file.read()
         else:
-           raise IOError('Template file not found or readable.')
+            raise IOError('Template file not found or readable.')
 
         return Template(template)
 
@@ -36,7 +35,7 @@ class Template(object):
         return rendered
 
     def getPlaceholders(self):
-        if (self.placeholders == None):
+        if not self.placeholders:
             self.placeholders = re.findall(r'\{\{([\w+\s?]+)\}\}', self.template)
 
         return self.placeholders
@@ -46,7 +45,6 @@ class Template(object):
         return self
 
     def __str__(self):
-        if (self.placeholders == None):
-            return self.template
-
-        return self.parseTemplate()
+        if self.placeholders:
+            return self.parseTemplate()
+        return self.template

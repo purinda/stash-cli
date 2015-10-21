@@ -7,19 +7,19 @@ pull-requests using Stashy library.
 """
 
 import stashy
-import git
+
 import errors
 
-class PullRequest(object):
 
-    client      = None
-    title       = None
+class PullRequest(object):
+    client = None
+    title = None
     description = None
-    src_branch  = None
+    src_branch = None
     dest_branch = None
-    reviewers   = None
-    repository  = None
-    project     = None
+    reviewers = None
+    repository = None
+    project = None
 
     def __init__(self, client):
         self.client = client
@@ -48,9 +48,7 @@ class PullRequest(object):
     def setRepository(self, repo):
         self.repository = repo
 
-    def create(self, state = 'OPEN'):
-        response = None
-
+    def create(self, state='OPEN'):
         try:
             response = self.client.projects[self.project].repos[self.repository].pull_requests.create(
                 self.title, str(self.src_branch), str(self.dest_branch), self.description, state, self.reviewers)
@@ -70,23 +68,23 @@ class PullRequestResponse(object):
     json = None
 
     # Properties
-    id          = None
-    title       = None
+    id = None
+    title = None
     description = None
-    url         = None
-    author      = None
+    url = None
+    author = None
 
     def __init__(self, json):
-        if (json != None):
+        if json:
             self.json = json
             self.parse()
 
     def parse(self):
-        self.id          = self.json['id']
-        self.title       = self.json['title']
+        self.id = self.json['id']
+        self.title = self.json['title']
         self.description = self.json['description']
-        self.url         = self.json['links']['self'][0]['href']
-        self.author      = self.json['author']['user']['displayName']
+        self.url = self.json['links']['self'][0]['href']
+        self.author = self.json['author']['user']['displayName']
 
     def getId(self):
         return str(self.id)

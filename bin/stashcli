@@ -6,24 +6,26 @@ stashcli
 ~~~~~~~~~
 """
 
-import stashy
 import sys
 import os
-import click
 import tempfile
+from subprocess import call
+
+import stashy
+import click
 import git
+
 from stashcli import hipchat
 from stashcli import errors
 from stashcli.template import Template
 from stashcli.config import Config
 from stashcli.pullrequest import PullRequest
-from subprocess import call
 
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-EDITOR   = os.environ.get('EDITOR','vim')
-stash    = None
+EDITOR = os.environ.get('EDITOR', 'vim')
+stash = None
 git_repo = git.Repo(os.getcwd())
 
 '''
@@ -31,7 +33,7 @@ Check configuration & git repository before
 continuing
 '''
 try:
-    conf     = Config()
+    conf = Config()
     template = Template.fromFile(conf.getTemplateFilePath())
 except Exception as e:
     click.echo(click.style(unicode(e), fg='red'))
@@ -40,6 +42,8 @@ except Exception as e:
 '''
 Command definition to make pull-requests
 '''
+
+
 @click.command()
 @click.option('--title', prompt="Title", help='Pull-request title')
 @click.option('--description', prompt="Description", default=template, help='Description to be set for the pull-request.\
@@ -48,9 +52,9 @@ Command definition to make pull-requests
 @click.option('--dest-branch', prompt="Destination branch", default=conf.getMergeDestination(), help='Target branch')
 @click.option('--reviewers', prompt="Reviewers", default=conf.getReviewers(None), help='Target branch')
 @click.option('--state', prompt="Pull-request state", default='OPEN', help='Initial state of the pull-request')
-@click.option('--multiline/--no-multiline', default=True, help='Open content of the description using the default editor before pushing.')
-def pr(title, description, src_branch, dest_branch, reviewers, state, multiline):
-
+@click.option('--multiline/--no-multiline', default=True,
+              help='Open content of the description using the default editor before pushing.')
+def create_pr(title, description, src_branch, dest_branch, reviewers, state, multiline):
     '''Program to create pull-requests in a Atlassian Stash repository.'''
 
     try:
@@ -99,15 +103,15 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
         # CLI print
         click.echo(click.style('Stash URL: ' + pr_response.getUrl(), fg='green'))
         click.echo(click.style('✅  Pull request #' + pr_response.getId() + ' - "' + \
-            pr_response.getTitle() + '" created successfully.', fg='green'))
+                               pr_response.getTitle() + '" created successfully.', fg='green'))
 
         # Integrate with Hipchat if enabled
         if (conf.isHipchatEnabled()):
             message = '🔀 ' + pr_response.getAuthor() + ' added pull-request <a href="' + \
-                pr_response.getUrl() + '">#' + pr_response.getId() + ' ' + pr_response.getTitle() + '</a>'
+                      pr_response.getUrl() + '">#' + pr_response.getId() + ' ' + pr_response.getTitle() + '</a>'
             chat = hipchat.Notifier(conf.getHipchatToken())
             chat.notify(conf.getHipchatRoom(), conf.getHipchatAgent(), message,
-                hipchat.Format.HTML, hipchat.MsgColour.PURPLE)
+                        hipchat.Format.HTML, hipchat.MsgColour.PURPLE)
             click.echo(click.style('✅  Published pull-request reference in Hipchat.', fg='green'))
 
         click.echo('')
@@ -128,5 +132,6 @@ def pr(title, description, src_branch, dest_branch, reviewers, state, multiline)
         click.echo(click.style(unicode(e), fg='red'))
         sys.exit(1)
 
+
 if __name__ == '__main__':
-    pr()
+    create_pr()
