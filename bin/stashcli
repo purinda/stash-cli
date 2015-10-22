@@ -24,7 +24,9 @@ from stashcli.pullrequest import PullRequest
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-EDITOR = os.environ.get('EDITOR', 'vim')
+EDITOR = os.environ.get('EDITOR') or os.environ.get('VISUAL')
+if not EDITOR:
+    EDITOR = 'notepad' if sys.platform == 'win32' else 'vi'
 stash = None
 git_repo = git.Repo(os.getcwd())
 
@@ -55,10 +57,12 @@ Command definition to make pull-requests
 @click.option('--multiline/--no-multiline', default=True,
               help='Open content of the description using the default editor before pushing.')
 def create_pr(title, description, src_branch, dest_branch, reviewers, state, multiline):
-    '''Program to create pull-requests in a Atlassian Stash repository.'''
+    """
+    Program to create pull-requests in a Atlassian Stash repository.
+    """
 
     try:
-        stash = stashy.connect(conf.getStashUrl(), conf.getUsername(), conf.getPassword())
+        stash = stashy.connect(conf.getStashUrl(), conf.getUsername(), conf.getPassword(), verify=False)
 
         # assign template content
         template = Template(description)
@@ -73,16 +77,13 @@ def create_pr(title, description, src_branch, dest_branch, reviewers, state, mul
         repository = conf.getRepo()
 
         # Open description in the editor if multiline is configured
-        if (multiline == True):
-            tmp = tempfile.NamedTemporaryFile(suffix=".tmp")
-            try:
-                tmp.write(unicode(template))
-                tmp.flush()
-                call([EDITOR, tmp.name])
-                f = open(tmp.name, 'r')
-                description = f.read()
-            finally:
-                tmp.close()
+        if multiline:
+            tmp_fd, tmp_filename = tempfile.mkstemp(prefix="stashcli", suffix=".tmp", text=True)
+            os.write(tmp_fd, template.__str__())
+            os.close(tmp_fd)
+            call([EDITOR, tmp_filename])
+            description = open(tmp_filename, 'r').read()
+            os.unlink(tmp_filename)
         else:
             description = unicode(template)
 
@@ -102,7 +103,7 @@ def create_pr(title, description, src_branch, dest_branch, reviewers, state, mul
 
         # CLI print
         click.echo(click.style('Stash URL: ' + pr_response.getUrl(), fg='green'))
-        click.echo(click.style('✅  Pull request #' + pr_response.getId() + ' - "' + \
+        click.echo(click.style('✅  Pull request #' + pr_response.getId() + ' - "' +
                                pr_response.getTitle() + '" created successfully.', fg='green'))
 
         # Integrate with Hipchat if enabled

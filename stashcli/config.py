@@ -51,7 +51,9 @@ class Config(object):
             try:
                 self.settings[item] = self.parser.get_value(self.SECTION, item)
             except Exception:
-                raise AttributeError('Incorrectly configured stashcli within gitconfig, refer to README.md')
+                raise AttributeError(
+                    'Incorrectly configured stashcli within gitconfig, refer to README.md\n'
+                    'Item %s not found in config' % item)
 
         # Optional config
         for item in config_opt:
@@ -103,7 +105,7 @@ class Config(object):
 
     @staticmethod
     def splitReviewers(subject, delimiter=','):
-        if (isinstance(subject, (str, unicode))):
+        if isinstance(subject, (str, unicode)):
             return subject.split(delimiter)
         else:
             raise ValueError('Need a string to split')
