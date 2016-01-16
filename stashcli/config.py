@@ -6,12 +6,12 @@ This class is responsible for handling configuration for stashcli
 """
 
 import os
-import string
 import base64
+
 from git.config import GitConfigParser
 
-class Config(object):
 
+class Config(object):
     CONFIG = '.git/config'
     SECTION = 'stashcli'
     parser = None
@@ -51,7 +51,9 @@ class Config(object):
             try:
                 self.settings[item] = self.parser.get_value(self.SECTION, item)
             except Exception:
-                raise AttributeError('Incorrectly configured stashcli within gitconfig, refer to README.md')
+                raise AttributeError(
+                    'Incorrectly configured stashcli within gitconfig, refer to README.md\n'
+                    'Item %s not found in config' % item)
 
         # Optional config
         for item in config_opt:
@@ -84,9 +86,9 @@ class Config(object):
     def getRepo(self):
         return self.settings['repo']
 
-    def getReviewers(self, delimiter = ','):
-        if (delimiter == None):
-            return self.settings['reviewers'];
+    def getReviewers(self, delimiter=','):
+        if not delimiter:
+            return self.settings['reviewers']
         return map(unicode.strip, self.splitReviewers(self.settings['reviewers'], delimiter))
 
     def isHipchatEnabled(self):
@@ -102,8 +104,8 @@ class Config(object):
         return self.settings['hipchatagent']
 
     @staticmethod
-    def splitReviewers(subject, delimiter = ','):
-        if (isinstance(subject, (str, unicode))):
+    def splitReviewers(subject, delimiter=','):
+        if isinstance(subject, (str, unicode)):
             return subject.split(delimiter)
         else:
             raise ValueError('Need a string to split')

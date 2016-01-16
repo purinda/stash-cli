@@ -7,9 +7,10 @@ A simple hipchat intergration library.
 - A special thanks to Jordon Scott.
 """
 
-
 import urllib
+
 import requests
+
 
 class MsgColour():
     def __init__(self):
@@ -53,4 +54,3 @@ class Notifier:
         response = requests.get(url)
         if response.status_code != 200:
             raise Exception(response.text)
-
